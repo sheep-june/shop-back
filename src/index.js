@@ -159,48 +159,6 @@ const allowedOrigins = [
     "https://kauuru-d541p8qsq-yangjuns-projects-672649fb.vercel.app",
 ];
 
-// app.use(
-//   cors({
-//     origin: function (origin, callback) {
-//       if (!origin) return callback(null, true); // allow Postman etc
-//       if (allowedOrigins.includes(origin)) {
-//         return callback(null, origin); // 👈 반드시 origin 그대로 넘겨야 함
-//       } else {
-//         return callback(new Error("Not allowed by CORS"));
-//       }
-//     },
-//     credentials: true,
-//   })
-// );
-// app.use(
-//     cors({
-//         origin: function (origin, callback) {
-//             // 1) Postman, 서버 자체 호출 등 Origin이 없는 경우 허용
-//             if (!origin) return callback(null, true);
-
-//             // 2) 실제 허용할 도메인 목록에 있으면, 그 값을 다시 넘겨준다.
-//             if (allowedOrigins.includes(origin)) {
-//                 // → 두 방식 다 가능하나, 아래처럼 true를 리턴하면
-//                 //   cors 패키지가 자동으로 Access-Control-Allow-Origin: <요청Origin> 으로 설정해 준다.
-//                 return callback(null, true);
-//                 // ↳ 만약 callback(null, origin) 을 쓰면 실제 응답 헤더에 정확히 origin이 들어가야 하지만,
-//                 //   가독성/일관성 때문에 callback(null, true) 권장
-//             }
-
-//             // 3) 그 외 Origin에서 온 요청은 차단
-//             return callback(new Error("Not allowed by CORS"));
-//         },
-//         methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-//         allowedHeaders: [
-//             "Content-Type",
-//             "Authorization",
-//             "x-csrf-token", // 기존 헤더
-//             "x-xsrf-token", // ← 여기에 반드시 추가
-//         ],
-//         credentials: true, // → 반드시 true여야 브라우저가 쿠키(자격증명)를 허용한다.
-//     })
-// );
-
 app.use(
     cors({
         origin: function (origin, callback) {
@@ -223,6 +181,7 @@ app.use(
             "x-xsrf-token", // ← 반드시 추가해야 x-xsrf-token 헤더가 허용됩니다
         ],
         credentials: true, // ← 꼭 true로 유지
+        exposedHeaders: ["x-csrf-token", "x-xsrf-token"]
     })
 );
 
