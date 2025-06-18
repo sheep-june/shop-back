@@ -18,7 +18,7 @@ router.get("/csrf-token", csrfProtection, (req, res) => {
 
 const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 5,
+    max: 100,
     message: "Too many attempts. Please try again later.",
     standardHeaders: true,
     legacyHeaders: false,

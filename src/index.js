@@ -1,124 +1,3 @@
-// const express = require("express"); //  Express 프레임워크 불러오기 (서버 기능 구현)
-// const path = require("path"); //  Node 내장 모듈 – 경로(path) 관련 작업을 쉽게 처리
-// const cors = require("cors"); //  CORS 설정용 – 도메인 간 통신 허용
-// const helmet = require("helmet"); //  보안 HTTP 헤더 설정을 도와주는 미들웨어
-// const csrf = require("csurf"); //  CSRF 토큰 미들웨어 – 요청 위조 방지
-// const cookieParser = require("cookie-parser"); //  쿠키를 읽고 파싱하는 미들웨어
-// const mongoose = require("mongoose"); //  MongoDB와 연결하고 데이터 다루는 ODM
-// const dotenv = require("dotenv"); //  환경변수 파일(.env) 읽기
-// dotenv.config(); // .env 파일 내용들을 process.env 로 등록
-
-// const app = express(); // Express 앱 생성
-// const port = 4000; // 서버가 열릴 포트 번호
-
-// const allowedOrigins = [
-//     "https://kauuru.vercel.app",
-//     "https://kauuru-d541p8qsq-yangjuns-projects-672649fb.vercel.app",
-//     "https://2b60-182-229-137-57.ngrok-free.app",
-// ];
-
-
-// app.use(
-//     cors({
-//         origin: function (origin, callback) {
-//             if (!origin) return callback(null, true);
-//             if (allowedOrigins.includes(origin)) {
-//                 return callback(null, origin); // 🔥 기존 true → origin 로 변경
-//             }
-//             return callback(new Error("Not allowed by CORS"));
-//         },
-//         methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-//         allowedHeaders: [
-//             "Content-Type",
-//             "Authorization",
-//             "x-csrf-token",
-//             "x-xsrf-token",
-//         ],
-//         credentials: true,
-//     })
-// );
-
-// app.use(helmet({ crossOriginResourcePolicy: false }));
-// app.use(cookieParser());
-// app.use(express.json());
-
-// app.use((req, res, next) => {
-//     console.log("요청 Origin:", req.headers.origin);
-//     console.log("요청 URL:", req.originalUrl);
-//     next();
-// });
-
-// app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
-// app.use("/ads", express.static(path.join(__dirname, "../uploads/ads")));
-// app.use("/IMGads", express.static(path.join(__dirname, "../uploads/IMGads")));
-
-// mongoose
-//     .connect(process.env.MONGO_URI)
-//     .then(() => console.log("MongoDB 연결 성공"))
-//     .catch((err) => console.error("MongoDB 연결 실패:", err));
-
-// app.use("/users", require("./routes/users"));
-// app.use("/products", require("./routes/products"));
-// app.use("/reviews", require("./routes/reviews"));
-// app.use("/api/admin", require("./routes/admin"));
-// app.use("/api/admin/ad-images", require("./routes/adminImageAds"));
-// app.use("/api/faq", require("./routes/faq"));
-// app.use("/api/question", require("./routes/question"));
-
-
-// const csrfProtection = csrf({
-//     cookie: {
-//         httpOnly: false,
-//         sameSite: "lax",
-//         secure: false,
-//     },
-//     value: (req) => req.headers["x-csrf-token"],
-// });
-
-// // const csrfProtection = csrf({
-// //     cookie: {
-// //         httpOnly: false,
-// //         sameSite: "lax",
-// //         secure: false,
-// //     },
-// //     value: (req) => req.headers["x-xsrf-token"],
-// // });
-
-// // app.use((req, res, next) => {
-// //     if (req.method === "OPTIONS") {
-// //         return res.sendStatus(200);
-// //     }
-// //     const csrfNeeded = ["POST", "PUT", "DELETE"].includes(req.method);
-// //     if (csrfNeeded) {
-// //         return csrfProtection(req, res, next);
-// //     }
-// //     next();
-// // });
-
-// app.use((req, res, next) => {
-//     if (req.method === "OPTIONS") {
-//         return res.sendStatus(200);
-//     }
-//     next();
-// });
-
-// app.get("/csrf-token", csrfProtection, (req, res) => {
-//     res.status(200).json({ csrfToken: req.csrfToken() });
-// });
-
-// app.get("/", (req, res) => {
-//     res.send("서버 실행 중");
-// });
-
-// app.use((err, req, res, next) => {
-//     console.error("에러 발생:", err);
-//     res.status(err.status || 500).send(err.message || "서버 오류");
-// });
-
-// app.listen(port, () => {
-//     console.log(`✅ 서버 실행 중: http://localhost:${port}`);
-// });
-
 const express = require("express");
 const path = require("path");
 const cors = require("cors");
@@ -132,27 +11,6 @@ dotenv.config();
 const app = express();
 // const port = 4000;
 const port = process.env.PORT || 4000;
-
-// const allowedOrigins = [
-//   "https://kauuru.vercel.app", // ✅ 실제 프로덕션 주소
-//   "https://kauuru-d541p8qsq-yangjuns-projects-672649fb.vercel.app", // ✅ 프리뷰 주소
-//   "https://0b79-182-229-137-57.ngrok-free.app" // ✅ 최신 ngrok 주소
-// ];
-
-// app.use(
-//   cors({
-//     origin: function (origin, callback) {
-//       console.log("🔗 요청 Origin:", origin);
-//       if (!origin || allowedOrigins.includes(origin)) {
-//         callback(null, true);
-//       } else {
-//         console.log("❌ CORS 차단:", origin);
-//         callback(new Error("Not allowed by CORS"));
-//       }
-//     },
-//     credentials: true,
-//   })
-// );
 
 const allowedOrigins = [
     "https://kauuru.vercel.app",
@@ -206,34 +64,14 @@ app.use("/api/admin/ad-images", require("./routes/adminImageAds"));
 app.use("/api/faq", require("./routes/faq"));
 app.use("/api/question", require("./routes/question"));
 
-// const csrfProtection = csrf({
-//     cookie: {
-//         httpOnly: false,
-//         sameSite: "lax",
-//         secure: false,
-//     },
-//     value: (req) => req.headers["x-csrf-token"],
-// });
-
 const csrfProtection = csrf({
     cookie: {
         httpOnly: false,
         sameSite: "lax",
         secure: false,
     },
-    value: (req) => req.headers["x-xsrf-token"], // ← "x-csrf-token" → "x-xsrf-token" 으로 변경
+    value: (req) => req.headers["x-xsrf-token"], 
 });
-
-// app.use((req, res, next) => {
-//     if (req.method === "OPTIONS") {
-//         return res.sendStatus(200);
-//     }
-//     const csrfNeeded = ["POST", "PUT", "DELETE"].includes(req.method);
-//     if (csrfNeeded) {
-//         return csrfProtection(req, res, next);
-//     }
-//     next();
-// });
 
 app.use((req, res, next) => {
     if (req.method === "OPTIONS") return res.sendStatus(200);
