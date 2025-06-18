@@ -68,7 +68,7 @@ const csrfProtection = csrf({
     cookie: {
         httpOnly: false,
         sameSite: "lax",
-        secure: false,
+        secure: true,
     },
     value: (req) => req.headers["x-xsrf-token"], 
 });
