@@ -15,6 +15,10 @@ const port = process.env.PORT || 4000;
 const allowedOrigins = [
     "https://kauuru.vercel.app",
     "https://kauuru-d541p8qsq-yangjuns-projects-672649fb.vercel.app",
+
+    //밑에는 배포시 무조건 주석처리할것
+    // "http://localhost:5173",
+    // "http://localhost:4000",
 ];
 
 app.use(
@@ -39,7 +43,7 @@ app.use(
             "x-xsrf-token", // ← 반드시 추가해야 x-xsrf-token 헤더가 허용됩니다
         ],
         credentials: true, // ← 꼭 true로 유지
-        exposedHeaders: ["x-csrf-token", "x-xsrf-token"]
+        exposedHeaders: ["x-csrf-token", "x-xsrf-token"],
     })
 );
 
@@ -55,6 +59,8 @@ mongoose
     .connect(process.env.MONGO_URI)
     .then(() => console.log("✅ MongoDB 연결 성공"))
     .catch((err) => console.error("❌ MongoDB 연결 실패:", err));
+    
+
 
 app.use("/users", require("./routes/users"));
 app.use("/products", require("./routes/products"));
@@ -64,14 +70,25 @@ app.use("/api/admin/ad-images", require("./routes/adminImageAds"));
 app.use("/api/faq", require("./routes/faq"));
 app.use("/api/question", require("./routes/question"));
 
+//배포용 코드
 const csrfProtection = csrf({
     cookie: {
         httpOnly: false,
         sameSite: "none",
         secure: true,
     },
-    value: (req) => req.headers["x-xsrf-token"], 
+    value: (req) => req.headers["x-xsrf-token"],
 });
+
+//로컬용 개발 코드
+// const csrfProtection = csrf({
+//     cookie: {
+//         httpOnly: false,
+//         sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+//         secure: process.env.NODE_ENV === "production",
+//     },
+//     value: (req) => req.headers["x-xsrf-token"],
+// });
 
 app.use((req, res, next) => {
     if (req.method === "OPTIONS") return res.sendStatus(200);
@@ -79,7 +96,6 @@ app.use((req, res, next) => {
     if (csrfNeeded) return csrfProtection(req, res, next);
     next();
 });
-
 
 app.get("/csrf-token", csrfProtection, (req, res) => {
     res.status(200).json({ csrfToken: req.csrfToken() });
