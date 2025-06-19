@@ -67,7 +67,7 @@ app.use("/api/question", require("./routes/question"));
 const csrfProtection = csrf({
     cookie: {
         httpOnly: false,
-        sameSite: "lax",
+        sameSite: "none",
         secure: true,
     },
     value: (req) => req.headers["x-xsrf-token"], 
