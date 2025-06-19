@@ -8,7 +8,7 @@ const csrf = require("csurf");
 const csrfProtection = csrf({
     cookie: {
         httpOnly: false,
-        sameSite: "lax",
+        sameSite: "none",
         secure: false,
     },
     value: (req) => req.headers["x-xsrf-token"],
