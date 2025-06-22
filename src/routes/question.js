@@ -4,16 +4,16 @@ const Question = require("../models/Question");
 const Comment = require("../models/Comment");
 const auth = require("../middleware/auth");
 const adminAuth = require("../middleware/adminAuth");
-const csrf = require("csurf");
 
-const csrfProtection = csrf({
-    cookie: {
-        httpOnly: false,
-        sameSite: "none",
-        secure: true,
-    },
-    value: (req) => req.headers["x-xsrf-token"],
-});
+// const csrf = require("csurf");
+// const csrfProtection = csrf({
+//     cookie: {
+//         httpOnly: false,
+//         sameSite: "none",
+//         secure: true,
+//     },
+//     value: (req) => req.headers["x-xsrf-token"],
+// });
 
 router.get("/", async (req, res) => {
     try {
@@ -39,7 +39,8 @@ router.get("/", async (req, res) => {
     }
 });
 
-router.post("/", auth, csrfProtection, async (req, res) => {
+// router.post("/", auth, csrfProtection, async (req, res) => {
+router.post("/", auth, async (req, res) => {
     try {
         const user = req.user;
 
@@ -66,7 +67,8 @@ router.post("/", auth, csrfProtection, async (req, res) => {
     }
 });
 
-router.post("/:id/comment", adminAuth, csrfProtection, async (req, res) => {
+// router.post("/:id/comment", adminAuth, csrfProtection, async (req, res) => {
+router.post("/:id/comment", adminAuth, async (req, res) => {
     try {
         const admin = req.admin;
         const { content } = req.body;
@@ -86,7 +88,8 @@ router.post("/:id/comment", adminAuth, csrfProtection, async (req, res) => {
     }
 });
 
-router.put("/reply/:replyId", adminAuth, csrfProtection, async (req, res) => {
+// router.put("/reply/:replyId", adminAuth, csrfProtection, async (req, res) => {
+router.put("/reply/:replyId", adminAuth, async (req, res) => {
     try {
         const { content } = req.body;
         const updated = await Comment.findByIdAndUpdate(
@@ -101,7 +104,8 @@ router.put("/reply/:replyId", adminAuth, csrfProtection, async (req, res) => {
     }
 });
 
-router.delete("/reply/:replyId", adminAuth, csrfProtection, async (req, res) => {
+// router.delete("/reply/:replyId", adminAuth, csrfProtection, async (req, res) => {
+router.delete("/reply/:replyId", adminAuth, async (req, res) => {
     try {
         const deleted = await Comment.findByIdAndDelete(req.params.replyId);
         if (!deleted) return res.status(404).json({ message: "댓글 없음" });
@@ -111,7 +115,8 @@ router.delete("/reply/:replyId", adminAuth, csrfProtection, async (req, res) => 
     }
 });
 
-router.delete("/:id", adminAuth, csrfProtection, async (req, res) => {
+// router.delete("/:id", adminAuth, csrfProtection, async (req, res) => {
+router.delete("/:id", adminAuth, async (req, res) => {
     try {
         const deleted = await Question.findByIdAndDelete(req.params.id);
         if (!deleted) return res.status(404).json({ message: "질문 없음" });
