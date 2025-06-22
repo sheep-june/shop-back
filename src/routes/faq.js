@@ -3,16 +3,16 @@ const router = express.Router();
 const Faq = require("../models/Faq");
 const auth = require("../middleware/auth");
 const mongoose = require("mongoose");
-const csrf = require("csurf");
 
-const csrfProtection = csrf({
-    cookie: {
-        httpOnly: false,
-        sameSite: "none",
-        secure: false,
-    },
-    value: (req) => req.headers["x-xsrf-token"],
-});
+// const csrf = require("csurf");
+// const csrfProtection = csrf({
+//     cookie: {
+//         httpOnly: false,
+//         sameSite: "none",
+//         secure: false,
+//     },
+//     value: (req) => req.headers["x-xsrf-token"],
+// });
 
 router.get("/", async (req, res) => {
     try {
@@ -23,7 +23,8 @@ router.get("/", async (req, res) => {
     }
 });
 
-router.post("/", auth, csrfProtection, async (req, res) => {
+// router.post("/", auth, csrfProtection, async (req, res) => {
+router.post("/", auth, async (req, res) => {
     try {
         const user = req.user;
 
@@ -49,7 +50,8 @@ router.post("/", auth, csrfProtection, async (req, res) => {
     }
 });
 
-router.put("/:id", auth, csrfProtection, async (req, res) => {
+// router.put("/:id", auth, csrfProtection, async (req, res) => {
+router.put("/:id", auth, async (req, res) => {
     try {
         const user = req.user;
 
@@ -80,7 +82,8 @@ router.put("/:id", auth, csrfProtection, async (req, res) => {
     }
 });
 
-router.delete("/:id", auth, csrfProtection, async (req, res) => {
+// router.delete("/:id", auth, csrfProtection, async (req, res) => {
+router.delete("/:id", auth, async (req, res) => {
     try {
         const user = req.user;
 
