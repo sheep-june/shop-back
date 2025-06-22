@@ -7,6 +7,7 @@ const { authAdmin } = require("../middleware/authAdmin");
 
 const router = express.Router();
 
+
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         const dir = path.join(__dirname, "../../uploads/IMGads");
@@ -64,40 +65,80 @@ router.post("/", authAdmin, upload.single("image"), async (req, res) => {
     }
 });
 
+// router.patch("/order/:id", authAdmin, async (req, res) => {
+//     const { id } = req.params;
+//     const { direction } = req.body;
+//     if (!["up", "down"].includes(direction)) {
+//         return res
+//             .status(400)
+//             .json({ message: "direction 값은 'up' 또는 'down'만 허용됩니다." });
+//     }
+
+//     try {
+//         const ad = await ImageAd.findById(id);
+//         if (!ad)
+//             return res
+//                 .status(404)
+//                 .json({ message: "해당 광고를 찾을 수 없습니다." });
+
+//         if (direction === "up") {
+//             const prev = await ImageAd.findOne({ order: ad.order - 1 });
+//             if (prev) {
+//                 [prev.order, ad.order] = [ad.order, prev.order];
+//                 await prev.save();
+//             }
+//             ad.order -= 1;
+//         } else {
+//             const next = await ImageAd.findOne({ order: ad.order + 1 });
+//             if (next) {
+//                 [next.order, ad.order] = [ad.order, next.order];
+//                 await next.save();
+//             }
+//             ad.order += 1;
+//         }
+
+//         await ad.save();
+//         res.json(ad);
+//     } catch (err) {
+//         console.error("광고 순서 변경 오류:", err);
+//         res.status(500).json({
+//             message: "광고 순서 변경에 실패했습니다.",
+//             error: err,
+//         });
+//     }
+// });
 router.patch("/order/:id", authAdmin, async (req, res) => {
     const { id } = req.params;
     const { direction } = req.body;
+
     if (!["up", "down"].includes(direction)) {
-        return res
-            .status(400)
-            .json({ message: "direction 값은 'up' 또는 'down'만 허용됩니다." });
+        return res.status(400).json({
+            message: "direction 값은 'up' 또는 'down'만 허용됩니다.",
+        });
     }
 
     try {
         const ad = await ImageAd.findById(id);
-        if (!ad)
-            return res
-                .status(404)
-                .json({ message: "해당 광고를 찾을 수 없습니다." });
-
-        if (direction === "up") {
-            const prev = await ImageAd.findOne({ order: ad.order - 1 });
-            if (prev) {
-                [prev.order, ad.order] = [ad.order, prev.order];
-                await prev.save();
-            }
-            ad.order -= 1;
-        } else {
-            const next = await ImageAd.findOne({ order: ad.order + 1 });
-            if (next) {
-                [next.order, ad.order] = [ad.order, next.order];
-                await next.save();
-            }
-            ad.order += 1;
+        if (!ad) {
+            return res.status(404).json({ message: "해당 광고를 찾을 수 없습니다." });
         }
 
-        await ad.save();
-        res.json(ad);
+        const targetOrder = direction === "up" ? ad.order - 1 : ad.order + 1;
+        const swapAd = await ImageAd
+            .findOne({ order: targetOrder })
+            .sort({ createdAt: 1 }); // 안정성을 위해 추천
+
+        if (!swapAd) {
+            return res.status(400).json({ message: "더 이상 이동할 수 없습니다." });
+        }
+
+        const tempOrder = ad.order;
+        ad.order = swapAd.order;
+        swapAd.order = tempOrder;
+
+        await Promise.all([ad.save(), swapAd.save()]);
+
+        res.json({ message: "순서 변경 성공", ad });
     } catch (err) {
         console.error("광고 순서 변경 오류:", err);
         res.status(500).json({
@@ -106,6 +147,8 @@ router.patch("/order/:id", authAdmin, async (req, res) => {
         });
     }
 });
+
+
 
 router.delete("/:id", authAdmin, async (req, res) => {
     const { id } = req.params;

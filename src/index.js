@@ -35,7 +35,7 @@ app.use(
             // 3) 그 외의 Origin은 차단
             return callback(new Error("Not allowed by CORS"));
         },
-        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
         allowedHeaders: [
             "Content-Type",
             "Authorization",
@@ -48,8 +48,9 @@ app.use(
 );
 
 app.use(helmet({ crossOriginResourcePolicy: false }));
-app.use(cookieParser());
 app.use(express.json());
+app.use(cookieParser());
+// app.use(express.json());
 
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 app.use("/ads", express.static(path.join(__dirname, "../uploads/ads")));
