@@ -48,9 +48,8 @@ app.use(
 );
 
 app.use(helmet({ crossOriginResourcePolicy: false }));
-app.use(express.json());
 app.use(cookieParser());
-// app.use(express.json());
+app.use(express.json());
 
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 app.use("/ads", express.static(path.join(__dirname, "../uploads/ads")));
