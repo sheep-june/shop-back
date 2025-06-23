@@ -17,8 +17,8 @@ const allowedOrigins = [
     "https://kauuru-d541p8qsq-yangjuns-projects-672649fb.vercel.app",
 
     //밑에는 배포시 무조건 주석처리할것
-    // "http://localhost:5173",
-    // "http://localhost:4000",
+    "http://localhost:5173",
+    "http://localhost:4000",
 ];
 
 app.use(
@@ -71,24 +71,24 @@ app.use("/api/faq", require("./routes/faq"));
 app.use("/api/question", require("./routes/question"));
 
 //배포용 코드
-const csrfProtection = csrf({
-    cookie: {
-        httpOnly: false,
-        sameSite: "none",
-        secure: true,
-    },
-    value: (req) => req.headers["x-xsrf-token"],
-});
-
-//로컬용 개발 코드
 // const csrfProtection = csrf({
 //     cookie: {
 //         httpOnly: false,
-//         sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-//         secure: process.env.NODE_ENV === "production",
+//         sameSite: "none",
+//         secure: true,
 //     },
 //     value: (req) => req.headers["x-xsrf-token"],
 // });
+
+//로컬용 개발 코드
+const csrfProtection = csrf({
+    cookie: {
+        httpOnly: false,
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        secure: process.env.NODE_ENV === "production",
+    },
+    value: (req) => req.headers["x-xsrf-token"],
+});
 
 app.use((req, res, next) => {
     if (req.method === "OPTIONS") return res.sendStatus(200);
