@@ -92,9 +92,24 @@ router.get("/", async (req, res) => {
             };
         }
 
-        const rawProducts = await Product.find(query)
-            .skip(parseInt(skip))
-            .limit(parseInt(limit));
+        // const rawProducts = await Product.find(query)
+        //     .skip(parseInt(skip))
+        //     .limit(parseInt(limit));
+
+        let rawProductsQuery = Product.find(query);
+        // sold 정렬이면 DB 레벨에서 바로 sort → limit
+        if (sort === "sold") {
+            rawProductsQuery = rawProductsQuery
+                .sort({ sold: -1 }) // 판매량 내림차순
+                .skip(parseInt(skip))
+                .limit(parseInt(limit));
+        } else {
+            // 나머지 sort 타입은 기존 로직 유지
+            rawProductsQuery = rawProductsQuery
+                .skip(parseInt(skip))
+                .limit(parseInt(limit));
+        }
+        const rawProducts = await rawProductsQuery;
 
         const productsWithRating = await Promise.all(
             rawProducts.map(async (product) => {
@@ -188,7 +203,5 @@ router.put("/:id", auth, async (req, res) => {
         res.status(500).send("상품 수정 실패");
     }
 });
-
-
 
 module.exports = router;
