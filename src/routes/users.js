@@ -369,16 +369,37 @@ router.delete("/wishlist/batch", auth, async (req, res) => {
     }
 });
 
+// router.get("/myproducts", auth, async (req, res) => {
+//     try {
+//         const products = await Product.find({ writer: req.user._id }).sort({
+//             createdAt: -1,
+//         });
+//         return res.status(200).json({ products });
+//     } catch (error) {
+//         console.error("내가 올린 상품 불러오기 실패:", error);
+//         return res.status(500).send("서버 오류");
+//     }
+// });
+
 router.get("/myproducts", auth, async (req, res) => {
     try {
-        const products = await Product.find({ writer: req.user._id }).sort({
-            createdAt: -1,
-        });
+        // 1) 쿼리 조건 정의
+        const query = { writer: req.user._id };
+
+        // 2) (디버그) 총 몇 개가 있는지 로그 출력
+        const totalCount = await Product.countDocuments(query);        
+
+        // 3) 최대 1000개까지 조회해서 반환
+        const products = await Product.find(query)
+                                      .sort({ createdAt: -1 })
+                                      .limit(1000);
+
         return res.status(200).json({ products });
     } catch (error) {
         console.error("내가 올린 상품 불러오기 실패:", error);
         return res.status(500).send("서버 오류");
     }
 });
+
 
 module.exports = router;

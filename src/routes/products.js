@@ -393,15 +393,31 @@ router.get("/", async (req, res) => {
 
 
 
-router.post("/", auth, async (req, res, next) => {
-    try {
-        const product = new Product(req.body);
-        await product.save();
-        return res.sendStatus(201);
-    } catch (error) {
-        next(error);
-    }
+// router.post("/", auth, async (req, res, next) => {
+//     try {
+//         const product = new Product(req.body);
+//         await product.save();
+//         return res.sendStatus(201);
+//     } catch (error) {
+//         next(error);
+//     }
+// });
+
+router.post("/", auth, async (req, res) => {
+  try {
+    // req.body 안에 들어있는 필드들과 함께 writer를 추가
+    const newProduct = new Product({
+      ...req.body,
+      writer: req.user._id
+    });
+    await newProduct.save();
+    return res.status(201).json({ product: newProduct });
+  } catch (err) {
+    console.error("상품 생성 실패:", err);
+    return res.status(500).send("서버 오류");
+  }
 });
+
 
 router.delete("/:id", auth, async (req, res) => {
     try {
