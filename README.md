@@ -24,9 +24,21 @@
 - **MongoDB** (Mongoose)  
 - **JWT** (jsonwebtoken)  
 - **Multer** (画像アップロード)  
-- **helmet**, **cors**, **csurf**  
-- **express-rate-limit**, **express-validator**  
+- **helmet** (セキュリティヘッダー)  
+- **cors** (クロスオリジン制御)  
+- **cookie-parser** (クッキー解析)  
+- **csurf** (CSRF 防御)  
+- **express-rate-limit** (リクエストレート制限)  
+- **express-validator** (入力検証)  
 - **bcryptjs** (パスワードハッシュ化)  
+- **dotenv** (環境変数管理)  
+- **morgan** (HTTPリクエストロギング)  
+- **winston** （アプリケーションロギング／カスタムロガー）  
+- **dayjs** (日時フォーマット)  
+- **nodemailer** (メール送信)  
+- **swagger-jsdoc** + **swagger-ui-express** (API ドキュメント)  
+- **nodemon** (開発時ホットリロード)  
+
 
 ## プロジェクト構成  
 ```plaintext
