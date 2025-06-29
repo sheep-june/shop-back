@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const Admin = require('./src/models/Admin'); 
+const Admin = require('./src/models/Admin');
 
 dotenv.config();
 
@@ -9,11 +9,11 @@ mongoose
   .then(async () => {
     console.log("DB 연결됨");
 
-    await Admin.deleteMany({}); 
+    await Admin.deleteMany({});
 
     await Admin.create({
       email: 'admin@example.com',
-      password: 'admin123', 
+      password: 'admin123',
     });
 
     console.log("관리자 계정 생성 완료!");
