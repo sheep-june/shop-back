@@ -59,8 +59,6 @@ mongoose
     .connect(process.env.MONGO_URI)
     .then(() => console.log("✅ MongoDB 연결 성공"))
     .catch((err) => console.error("❌ MongoDB 연결 실패:", err));
-    
-
 
 app.use("/users", require("./routes/users"));
 app.use("/products", require("./routes/products"));
