@@ -1,4 +1,4 @@
-# Shopping Mall - オンラインショッピングサイト バックエンド（Node.js + Express）
+# Kauuru - バックエンド（Node.js + Express）
 
 ## 概要  
 このリポジトリには、ショッピングサイトのバックエンド（Node.js + Express）を実装しています。  
