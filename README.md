@@ -16,7 +16,13 @@
 - 商品検索・フィルター・ページネーション  
 - 管理者認証・管理者用広告バナーの CRUD  
 - ファイルアップロード: Multer で画像保存  
-- グローバルエラーハンドリング  
+- グローバルエラーハンドリング
+
+## CI/CD（自動デプロイ）
+- GitHub Actions を使い、`main` ブランチに push すると  
+  AWS EC2 に自動でデプロイされます。  
+- `git pull → npm install → pm2 reload` が自動実行されます。  
+- 設定ファイル: `.github/workflows/deploy.yml`
 
 
 ## 使用技術スタック  
