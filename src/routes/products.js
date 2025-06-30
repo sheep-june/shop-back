@@ -270,7 +270,7 @@ router.get("/:id", async (req, res, next) => {
 router.get("/", async (req, res) => {
     try {
         // 1) 파라미터 해석
-        const { skip = 0, limit = 20, searchTerm = "", sort } = req.query;
+        const { skip = 0, limit = 1000, searchTerm = "", sort } = req.query;
         const skipNum = parseInt(skip, 10);
         const limitNum = parseInt(limit, 10);
         let filters = {};
