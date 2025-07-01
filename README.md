@@ -50,21 +50,30 @@
 ```plaintext
 backend/
 ├── models/
-│   ├── User.js       （ユーザースキーマ）
-│   ├── Product.js    （商品スキーマ）
-│   ├── Review.js     （レビュー）
-│   ├── Question.js   （お問い合わせ）
-│   └── FAQ.js        （FAQ 項目）
+│   ├── User.js         （ユーザースキーマ）
+│   ├── Product.js      （商品スキーマ）
+│   ├── Review.js       （レビュー）
+│   ├── Question.js     （お問い合わせ）
+│   ├── FAQ.js          （FAQ 項目）
+│   ├── Admin.js        （管理者スキーマ）
+│   ├── Comment.js      （コメント）
+│   ├── Ad.js           （テキスト広告）
+│   ├── ImageAd.js      （画像広告）
+│   ├── Payment.js      （決済情報）
+│   └── Order.js        （注文情報）
 ├── routes/
-│   ├── users.js      （会員認証・カート・履歴）
-│   ├── products.js   （商品 CRUD・検索）
-│   ├── reviews.js    （レビュー投稿・取得）
-│   ├── question.js   （お問い合わせ投稿・取得）
-│   └── faq.js        （FAQ 取得）
+│   ├── users.js        （会員認証・カート・履歴）
+│   ├── products.js     （商品 CRUD・検索）
+│   ├── reviews.js      （レビュー投稿・取得）
+│   ├── question.js     （お問い合わせ投稿・取得）
+│   ├── faq.js          （FAQ 取得）
+│   ├── admin.js        （管理者操作用API）
+│   ├── ad.js           （テキスト広告API）
+│   ├── imageAd.js      （画像広告API）
+│   └── order.js        （注文関連API）
 ├── middleware/
-│   ├── auth.js       （JWT 検証）
-│   └── adminAuth.js  （管理者認証）
-├── uploads/          （アップロード画像保存フォルダ）
-├── utils/
-│   └── logger.js     （ロガー設定）
-└── index.js          （サーバー起動・ミドルウェア設定）
+│   ├── auth.js         （JWT 検証）
+│   ├── adminAuth.js    （管理者認証）
+│   └── authAdmin.js    （管理者用ルート認証）
+├── uploads/            （アップロード画像保存フォルダ）
+└── index.js            （サーバー起動・ミドルウェア設定）
