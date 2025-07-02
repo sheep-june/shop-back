@@ -6,12 +6,12 @@ let auth = async (req, res, next) => {
     try {
         const authHeader = req.headers["authorization"];
         if (!authHeader) {
-            return res.status(401).json({ message: "인증 헤더 없음" });
+            return res.status(401).json({ message: "認証ヘッダーなし" });
         }
 
         const token = authHeader.split(" ")[1];
         if (!token) {
-            return res.status(401).json({ message: "토큰 없음" });
+            return res.status(401).json({ message: "トークンなし" });
         }
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -24,10 +24,10 @@ let auth = async (req, res, next) => {
         }
 
         if (!user) {
-            console.warn(" 유저가 존재하지 않음, decoded.id =", decoded.id);
+            console.warn("ユーザーが存在しない, decoded.id =", decoded.id);
             return res
                 .status(401)
-                .json({ message: "유저 없음 또는 잘못된 토큰" });
+                .json({ message: "ユーザーなしまたは無効なトークン" });
         }
 
         req.user = {
@@ -38,8 +38,8 @@ let auth = async (req, res, next) => {
 
         next();
     } catch (error) {
-        console.error("auth 미들웨어 오류:", error);
-        return res.status(401).json({ message: "토큰 검증 실패" });
+        console.error("auth ミドルウェアエラー:", error);
+        return res.status(401).json({ message: "トークン検証失敗" });
     }
 };
 

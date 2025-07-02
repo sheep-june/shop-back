@@ -25,10 +25,10 @@ router.post("/", adminAuth, upload.single("video"), async (req, res) => {
     try {
         const { productId } = req.body;
         const product = await Product.findById(productId);
-        if (!product) return res.status(404).json("상품이 존재하지 않습니다.");
+        if (!product) return res.status(404).json("商品が存在しません。");
         const adCount = await Ad.countDocuments();
         if (adCount >= 5) {
-            return res.status(400).json("광고는 최대 5개까지 등록 가능합니다.");
+            return res.status(400).json("広告は最大5つまで登録可能です。");
         }
 
         const ad = new Ad({

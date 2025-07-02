@@ -5,16 +5,6 @@ const Comment = require("../models/Comment");
 const auth = require("../middleware/auth");
 const adminAuth = require("../middleware/adminAuth");
 
-// const csrf = require("csurf");
-// const csrfProtection = csrf({
-//     cookie: {
-//         httpOnly: false,
-//         sameSite: "none",
-//         secure: true,
-//     },
-//     value: (req) => req.headers["x-xsrf-token"],
-// });
-
 router.get("/", async (req, res) => {
     try {
         const questions = await Question.find()
@@ -35,7 +25,7 @@ router.get("/", async (req, res) => {
 
         res.status(200).json(result);
     } catch (err) {
-        res.status(500).json({ message: "질문 조회 실패" });
+        res.status(500).json({ message: "質問照会失敗" });
     }
 });
 
@@ -47,7 +37,7 @@ router.post("/", auth, async (req, res) => {
         if (!user || user.role !== 0) {
             return res
                 .status(403)
-                .json({ message: "일반 유저만 질문 작성 가능" });
+                .json({ message: "一般ユーザーのみ質問作成可能" });
         }
 
         const { title, content } = req.body;
@@ -61,8 +51,8 @@ router.post("/", auth, async (req, res) => {
         await question.save();
         res.status(201).json(question);
     } catch (err) {
-        console.error("질문 작성 실패:", err);
-        res.status(500).json({ message: "질문 작성 실패" });
+        console.error("質問作成失敗:", err);
+        res.status(500).json({ message: "質問作成失敗" });
 
     }
 });
@@ -83,8 +73,8 @@ router.post("/:id/comment", adminAuth, async (req, res) => {
         await comment.save();
         res.status(201).json(comment);
     } catch (err) {
-        console.error("댓글 저장 실패:", err);
-        res.status(500).json({ message: "댓글 작성 실패" });
+        console.error("コメント保存失敗", err);
+        res.status(500).json({ message: "コメント作成失敗" });
     }
 });
 
@@ -97,10 +87,10 @@ router.put("/reply/:replyId", adminAuth, async (req, res) => {
             { content },
             { new: true }
         );
-        if (!updated) return res.status(404).json({ message: "댓글 없음" });
-        res.status(200).json({ message: "댓글 수정 완료" });
+        if (!updated) return res.status(404).json({ message: "コメントなし" });
+        res.status(200).json({ message: "コメント修正完了" });
     } catch (err) {
-        res.status(500).json({ message: "댓글 수정 실패" });
+        res.status(500).json({ message: "コメント修正失敗" });
     }
 });
 
@@ -108,10 +98,10 @@ router.put("/reply/:replyId", adminAuth, async (req, res) => {
 router.delete("/reply/:replyId", adminAuth, async (req, res) => {
     try {
         const deleted = await Comment.findByIdAndDelete(req.params.replyId);
-        if (!deleted) return res.status(404).json({ message: "댓글 없음" });
-        res.status(200).json({ message: "댓글 삭제 완료" });
+        if (!deleted) return res.status(404).json({ message: "コメントなし" });
+        res.status(200).json({ message: "コメント削除完了" });
     } catch (err) {
-        res.status(500).json({ message: "댓글 삭제 실패" });
+        res.status(500).json({ message: "コメント削除失敗" });
     }
 });
 
@@ -119,13 +109,13 @@ router.delete("/reply/:replyId", adminAuth, async (req, res) => {
 router.delete("/:id", adminAuth, async (req, res) => {
     try {
         const deleted = await Question.findByIdAndDelete(req.params.id);
-        if (!deleted) return res.status(404).json({ message: "질문 없음" });
+        if (!deleted) return res.status(404).json({ message: "質問なし" });
 
         await Comment.deleteOne({ question: req.params.id });
 
-        res.status(200).json({ message: "질문 삭제 완료" });
+        res.status(200).json({ message: "質問削除済み" });
     } catch (err) {
-        res.status(500).json({ message: "질문 삭제 실패" });
+        res.status(500).json({ message: "質問削除失敗" });
     }
 });
 

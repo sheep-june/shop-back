@@ -53,219 +53,8 @@ router.get("/:id", async (req, res, next) => {
     }
 });
 
-// router.get("/", async (req, res) => {
-//     try {
-//         // const { skip = 0, limit = 20, searchTerm = "", sort } = req.query;
-//         const { skip = 0, limit = 20, searchTerm = "", sort } = req.query;
-//         let filters = {};
-
-//         if (typeof req.query.filters === "string") {
-//             // filters = JSON.parse(req.query.filters);
-//             try {
-//                 if (typeof req.query.filters === "string") {
-//                     filters = JSON.parse(req.query.filters);
-//                 }
-//             } catch (e) {
-//                 console.error("❌ filters 파싱 실패:", e.message);
-//                 filters = {};
-//             }
-//         } else if (typeof req.query.filters === "object") {
-//             filters = req.query.filters;
-//         }
-
-//         const query = {};
-
-//         if (searchTerm) {
-//             query.$or = [
-//                 { title: { $regex: searchTerm, $options: "i" } },
-//                 { description: { $regex: searchTerm, $options: "i" } },
-//             ];
-//         }
-
-//         if (filters.continents && filters.continents.length > 0) {
-//             query.category = { $in: filters.continents };
-//         }
-
-//         if (filters.price && filters.price.length === 2) {
-//             query.price = {
-//                 $gte: filters.price[0],
-//                 $lte: filters.price[1],
-//             };
-//         }
-
-//         // const rawProducts = await Product.find(query)
-//         //     .skip(parseInt(skip))
-//         //     .limit(parseInt(limit));
-
-//         let rawProductsQuery = Product.find(query);
-//         // sold 정렬이면 DB 레벨에서 바로 sort → limit
-//         if (sort === "sold") {
-//             rawProductsQuery = rawProductsQuery
-//                 .sort({ sold: -1 }) // 판매량 내림차순
-//                 .skip(parseInt(skip))
-//                 .limit(parseInt(limit));
-//         } else {
-//             // 나머지 sort 타입은 기존 로직 유지
-//             rawProductsQuery = rawProductsQuery
-//                 .skip(parseInt(skip))
-//                 .limit(parseInt(limit));
-//         }
-//         const rawProducts = await rawProductsQuery;
-
-//         const productsWithRating = await Promise.all(
-//             rawProducts.map(async (product) => {
-//                 const reviews = await Review.find({ product: product._id });
-//                 const avg =
-//                     reviews.reduce((acc, r) => acc + r.rating, 0) /
-//                     (reviews.length || 1);
-//                 return {
-//                     ...product._doc,
-//                     averageRating: reviews.length
-//                         ? parseFloat(avg.toFixed(1))
-//                         : 0,
-//                 };
-//             })
-//         );
-
-//         let sorted = [...productsWithRating];
-//         switch (sort) {
-//             case "views":
-//                 sorted.sort((a, b) => b.views - a.views);
-//                 break;
-//             case "rating":
-//                 sorted.sort((a, b) => b.averageRating - a.averageRating);
-//                 break;
-//             case "lowPrice":
-//                 sorted.sort((a, b) => a.price - b.price);
-//                 break;
-//             case "highPrice":
-//                 sorted.sort((a, b) => b.price - a.price);
-//                 break;
-//             case "sold":
-//                 sorted.sort((a, b) => b.sold - a.sold);
-//                 break;
-//             default:
-//                 sorted.sort(
-//                     (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-//                 );
-//         }
-
-//         const totalCount = await Product.countDocuments(query);
-//         const hasMore = parseInt(skip) + parseInt(limit) < totalCount;
-
-//         res.status(200).json({
-//             products: sorted,
-//             hasMore,
-//             totalCount,
-//         });
-//     } catch (err) {
-//         console.error(" 상품 목록 조회 실패:", err);
-//         res.status(400).send("상품 목록 조회 실패");
-//     }
-// });
 
 
-
-
-
-
-
-
-// router.get("/", async (req, res) => {
-//     try {
-//         // 1) 클라이언트에서 전달된 파라미터 해석
-//         const { skip = 0, limit = 20, searchTerm = "", sort } = req.query;
-//         let filters = {};
-
-//         // filters 파싱 (string 또는 object 처리)
-//         if (typeof req.query.filters === "string") {
-//             try {
-//                 filters = JSON.parse(req.query.filters);
-//             } catch (e) {
-//                 console.error("❌ filters 파싱 실패:", e.message);
-//             }
-//         } else if (typeof req.query.filters === "object") {
-//             filters = req.query.filters;
-//         }
-
-//         // 2) MongoDB query 객체 구성
-//         const query = {};
-//         if (searchTerm) {
-//             query.$or = [
-//                 { title:    { $regex: searchTerm, $options: "i" } },
-//                 { description:{ $regex: searchTerm, $options: "i" } },
-//             ];
-//         }
-//         if (filters.continents?.length) {
-//             query.category = { $in: filters.continents };
-//         }
-//         if (Array.isArray(filters.price) && filters.price.length === 2) {
-//             query.price = {
-//                 $gte: Number(filters.price[0]),
-//                 $lte: Number(filters.price[1]),
-//             };
-//         }
-
-//         // 3) 정렬 로직: sold/views/price는 DB에서, rating만 메모리 정렬
-//         let rawProductsQuery = Product.find(query);
-//         switch (sort) {
-//             case "sold":
-//                 rawProductsQuery = rawProductsQuery.sort({ sold: -1 });
-//                 break;
-//             case "views":
-//                 rawProductsQuery = rawProductsQuery.sort({ views: -1 });
-//                 break;
-//             case "lowPrice":
-//                 rawProductsQuery = rawProductsQuery.sort({ price: 1 });
-//                 break;
-//             case "highPrice":
-//                 rawProductsQuery = rawProductsQuery.sort({ price: -1 });
-//                 break;
-//             default:
-//                 // rating 및 기타(신상품)는 createdAt 기준 내림차순
-//                 rawProductsQuery = rawProductsQuery.sort({ createdAt: -1 });
-//         }
-
-//         // 4) 페이징 적용
-//         const rawProducts = await rawProductsQuery
-//             .skip(parseInt(skip, 10))
-//             .limit(parseInt(limit, 10));
-
-//         // 5) 평균 평점 계산
-//         const productsWithRating = await Promise.all(
-//             rawProducts.map(async (product) => {
-//                 const reviews = await Review.find({ product: product._id });
-//                 const avg =
-//                     reviews.reduce((sum, r) => sum + r.rating, 0) /
-//                     (reviews.length || 1);
-//                 return {
-//                     ...product._doc,
-//                     averageRating: reviews.length ? Number(avg.toFixed(1)) : 0,
-//                 };
-//             })
-//         );
-
-//         // 6) rating 정렬 (DB에서 못 한 경우)
-//         let sortedProducts = [...productsWithRating];
-//         if (sort === "rating") {
-//             sortedProducts.sort((a, b) => b.averageRating - a.averageRating);
-//         }
-
-//         // 7) 전체 개수 & hasMore 플래그
-//         const totalCount = await Product.countDocuments(query);
-//         const hasMore = parseInt(skip, 10) + parseInt(limit, 10) < totalCount;
-
-//         // 8) 응답
-//         res.status(200).json({
-//             products: sortedProducts,
-//             totalCount,
-//             hasMore,
-//         });
-//     } catch (err) {
-//         console.error("상품 목록 조회 실패:", err);
-//         res.status(400).send("상품 목록 조회 실패");
-//     }
-// });
 
 router.get("/", async (req, res) => {
     try {
@@ -279,7 +68,7 @@ router.get("/", async (req, res) => {
             try {
                 filters = JSON.parse(req.query.filters);
             } catch (e) {
-                console.error("❌ filters 파싱 실패:", e.message);
+                console.error("❌ filters パーシング失敗:", e.message);
             }
         } else if (typeof req.query.filters === "object") {
             filters = req.query.filters;
@@ -386,22 +175,13 @@ router.get("/", async (req, res) => {
             hasMore,
         });
     } catch (err) {
-        console.error("상품 목록 조회 실패:", err);
-        res.status(400).send("상품 목록 조회 실패");
+        console.error("商品リスト照会失敗:", err);
+        res.status(400).send("商品リスト照会失敗");
     }
 });
 
 
 
-// router.post("/", auth, async (req, res, next) => {
-//     try {
-//         const product = new Product(req.body);
-//         await product.save();
-//         return res.sendStatus(201);
-//     } catch (error) {
-//         next(error);
-//     }
-// });
 
 router.post("/", auth, async (req, res) => {
   try {
@@ -413,8 +193,8 @@ router.post("/", auth, async (req, res) => {
     await newProduct.save();
     return res.status(201).json({ product: newProduct });
   } catch (err) {
-    console.error("상품 생성 실패:", err);
-    return res.status(500).send("서버 오류");
+    console.error("商品作成失敗:", err);
+    return res.status(500).send("サーバーエラー");
   }
 });
 
@@ -422,16 +202,16 @@ router.post("/", auth, async (req, res) => {
 router.delete("/:id", auth, async (req, res) => {
     try {
         const product = await Product.findById(req.params.id);
-        if (!product) return res.status(404).send("상품을 찾을 수 없습니다.");
+        if (!product) return res.status(404).send("商品が見つかりません。");
         if (product.writer.toString() !== req.user._id.toString()) {
-            return res.status(403).send("삭제 권한이 없습니다.");
+            return res.status(403).send("削除権限がありません。");
         }
 
         await Product.findByIdAndDelete(req.params.id);
-        res.send("상품이 삭제되었습니다.");
+        res.send("商品が削除されました。");
     } catch (err) {
-        console.error("상품 삭제 오류:", err);
-        res.status(500).send("서버 오류로 삭제에 실패했습니다.");
+        console.error("商品削除エラー:", err);
+        res.status(500).send("サーバー エラーのため、削除に失敗しました。");
     }
 });
 

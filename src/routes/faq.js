@@ -19,7 +19,7 @@ router.get("/", async (req, res) => {
         const faqs = await Faq.find().populate("admin", "name");
         res.status(200).json(faqs);
     } catch (err) {
-        res.status(500).json({ message: "FAQ 조회 실패" });
+        res.status(500).json({ message: "FAQ 照会失敗" });
     }
 });
 
@@ -31,7 +31,7 @@ router.post("/", auth, async (req, res) => {
         if (!user || user.role !== 1) {
             return res
                 .status(403)
-                .json({ message: "관리자만 작성할 수 있습니다." });
+                .json({ message: "管理者のみ作成できます。" });
         }
 
         const { title, content } = req.body;
@@ -45,8 +45,8 @@ router.post("/", auth, async (req, res) => {
         await faq.save();
         res.status(201).json(faq);
     } catch (err) {
-        console.error("FAQ 작성 실패:", err);
-        res.status(500).json({ message: "FAQ 작성 실패" });
+        console.error("FAQ 作成失敗:", err);
+        res.status(500).json({ message: "FAQ 作成失敗" });
     }
 });
 
@@ -58,7 +58,7 @@ router.put("/:id", auth, async (req, res) => {
         if (!user || user.role !== 1) {
             return res
                 .status(403)
-                .json({ message: "관리자만 수정할 수 있습니다." });
+                .json({ message: "管理者のみ修正できます。" });
         }
 
         const { title, content } = req.body;
@@ -72,13 +72,13 @@ router.put("/:id", auth, async (req, res) => {
         if (!updated) {
             return res
                 .status(404)
-                .json({ message: "해당 FAQ를 찾을 수 없습니다." });
+                .json({ message: "該当するFAQが見つかりません。" });
         }
 
         res.status(200).json(updated);
     } catch (err) {
-        console.error("FAQ 수정 실패:", err);
-        res.status(500).json({ message: "FAQ 수정 실패" });
+        console.error("FAQ 修正失敗", err);
+        res.status(500).json({ message: "FAQ 修正失敗" });
     }
 });
 
@@ -90,7 +90,7 @@ router.delete("/:id", auth, async (req, res) => {
         if (!user || user.role !== 1) {
             return res
                 .status(403)
-                .json({ message: "관리자만 삭제할 수 있습니다." });
+                .json({ message: "管理者のみ削除できます。" });
         }
 
         const deleted = await Faq.findByIdAndDelete(req.params.id);
@@ -98,13 +98,13 @@ router.delete("/:id", auth, async (req, res) => {
         if (!deleted) {
             return res
                 .status(404)
-                .json({ message: "해당 FAQ를 찾을 수 없습니다." });
+                .json({ message: "該当するFAQが見つかりません。" });
         }
 
-        res.status(200).json({ message: "삭제 완료" });
+        res.status(200).json({ message: "削除済み" });
     } catch (err) {
-        console.error("FAQ 삭제 실패:", err);
-        res.status(500).json({ message: "FAQ 삭제 실패" });
+        console.error("FAQ 削除失敗:", err);
+        res.status(500).json({ message: "FAQ 削除失敗" });
     }
 });
 

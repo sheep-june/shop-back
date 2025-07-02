@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 exports.authAdmin = (req, res, next) => {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        return res.status(401).json({ message: "관리자 토큰이 없습니다." });
+        return res.status(401).json({ message: "管理者トークンがありません。" });
     }
 
     const token = authHeader.split(" ")[1];
@@ -13,12 +13,12 @@ exports.authAdmin = (req, res, next) => {
         if (decoded.role !== 1) {
             return res
                 .status(403)
-                .json({ message: "관리자 권한이 필요합니다." });
+                .json({ message: "管理者権限が必要です。" });
         }
 
         req.admin = decoded;
         next();
     } catch (err) {
-        return res.status(401).json({ message: "유효하지 않은 토큰입니다." });
+        return res.status(401).json({ message: "無効なトークンです。" });
     }
 };

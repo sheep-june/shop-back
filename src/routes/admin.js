@@ -11,10 +11,10 @@ router.post("/login", async (req, res) => {
 
     try {
         const admin = await Admin.findOne({ email });
-        if (!admin) return res.status(401).json("이메일이 존재하지 않습니다.");
+        if (!admin) return res.status(401).json("メールが存在しません。");
 
         const isMatch = await admin.comparePassword(password);
-        if (!isMatch) return res.status(401).json("비밀번호가 틀립니다.");
+        if (!isMatch) return res.status(401).json("パスワードが間違っています。");
 
         const payload = {
             id: admin._id,
@@ -28,8 +28,8 @@ router.post("/login", async (req, res) => {
 
         res.json({ token, admin });
     } catch (err) {
-        console.error("관리자 로그인 실패:", err);
-        res.status(500).json("서버 오류");
+        console.error("管理者ログイン失敗:", err);
+        res.status(500).json("サーバーエラー");
     }
 });
 
@@ -38,7 +38,7 @@ router.get("/users", adminAuth, async (req, res) => {
         const users = await User.find({}, "_id name email");
         res.json(users);
     } catch (err) {
-        res.status(500).json("유저 목록을 불러오는 데 실패했습니다.");
+        res.status(500).json("ユーザー リストの読み込みに失敗しました。");
     }
 });
 
@@ -47,7 +47,7 @@ router.get("/posts", adminAuth, async (req, res) => {
         const posts = await Product.find({}, "_id title description");
         res.json(posts);
     } catch (err) {
-        res.status(500).json("게시글 목록을 불러오는 데 실패했습니다.");
+        res.status(500).json("投稿リストの読み込みに失敗しました。");
     }
 });
 
@@ -56,7 +56,7 @@ router.delete("/users/:id", adminAuth, async (req, res) => {
         await User.findByIdAndDelete(req.params.id);
         res.json({ success: true });
     } catch (err) {
-        res.status(500).json("유저 삭제에 실패했습니다.");
+        res.status(500).json("ユーザーの削除に失敗しました。");
     }
 });
 
@@ -65,7 +65,7 @@ router.delete("/posts/:id", adminAuth, async (req, res) => {
         await Product.findByIdAndDelete(req.params.id);
         res.json({ success: true });
     } catch (err) {
-        res.status(500).json("게시글 삭제에 실패했습니다.");
+        res.status(500).json("投稿の削除に失敗しました。");
     }
 });
 

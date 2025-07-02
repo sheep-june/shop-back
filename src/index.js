@@ -57,8 +57,8 @@ app.use("/IMGads", express.static(path.join(__dirname, "../uploads/IMGads")));
 
 mongoose
     .connect(process.env.MONGO_URI)
-    .then(() => console.log("✅ MongoDB 연결 성공"))
-    .catch((err) => console.error("❌ MongoDB 연결 실패:", err));
+    .then(() => console.log("✅ MongoDB 連結成功"))
+    .catch((err) => console.error("❌ MongoDB 接続失敗:", err));
 
 app.use("/users", require("./routes/users"));
 app.use("/products", require("./routes/products"));
@@ -100,14 +100,14 @@ app.get("/csrf-token", csrfProtection, (req, res) => {
 });
 
 app.get("/", (req, res) => {
-    res.send("서버 실행 중");
+    res.send("サーバー実行中");
 });
 
 app.use((err, req, res, next) => {
-    console.error("에러 발생:", err);
-    res.status(err.status || 500).send(err.message || "서버 오류");
+    console.error("エラー発生", err);
+    res.status(err.status || 500).send(err.message || "サーバーエラー");
 });
 
 app.listen(port, () => {
-    console.log(`✅ 서버 실행 중: PORT ${port}`);
+    console.log(`✅ サーバー実行中: PORT ${port}`);
 });

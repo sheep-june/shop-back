@@ -15,7 +15,7 @@ router.post("/", auth, async (req, res) => {
             (item) => item.id.toString() === productId
         );
         if (!hasPurchased) {
-            return res.status(403).json({ message: "구매한 사용자만 리뷰 작성 가능" });
+            return res.status(403).json({ message: "購入したユーザーのみレビュー作成可能" });
         }
 
         const existingReview = await Review.findOne({
@@ -23,7 +23,7 @@ router.post("/", auth, async (req, res) => {
             user: req.user._id,
         });
         if (existingReview) {
-            return res.status(400).json({ message: "이미 리뷰를 작성하셨습니다." });
+            return res.status(400).json({ message: "すでにレビューを作成しています。" });
         }
 
         const review = new Review({
@@ -46,7 +46,7 @@ router.post("/", auth, async (req, res) => {
         res.status(201).json(review);
     } catch (err) {
         console.error(err);
-        res.status(500).json("리뷰 저장 실패");
+        res.status(500).json("レビュー保存失敗");
     }
 });
 
@@ -66,7 +66,7 @@ router.get("/:productId", async (req, res) => {
         });
     } catch (err) {
         console.error(err);
-        res.status(500).send("리뷰 불러오기 실패");
+        res.status(500).send("レビューの読み込みに失敗");
     }
 });
 

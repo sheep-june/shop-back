@@ -40,11 +40,11 @@ router.post(
     "/register",
     authLimiter,
     [
-        body("email").isEmail().withMessage("유효한 이메일을 입력하세요."),
+        body("email").isEmail().withMessage("有効なメールアドレスを入力してください。"),
         body("password")
             .isLength({ min: 6 })
-            .withMessage("비밀번호는 최소 6자 이상이어야 합니다."),
-        body("name").notEmpty().withMessage("이름을 입력하세요."),
+            .withMessage("パスワードは少なくとも 6 文字以上である必要があります。"),
+        body("name").notEmpty().withMessage("名前を入力してください。"),
     ],
     async (req, res, next) => {
         const errors = validationResult(req);
@@ -66,8 +66,8 @@ router.post(
     "/login",
     authLimiter,
     [
-        body("email").isEmail().withMessage("유효한 이메일을 입력하세요."),
-        body("password").notEmpty().withMessage("비밀번호를 입력하세요."),
+        body("email").isEmail().withMessage("有効なメールアドレスを入力してください。"),
+        body("password").notEmpty().withMessage("パスワードを入力してください。"),
     ],
     async (req, res, next) => {
         const errors = validationResult(req);
@@ -178,7 +178,7 @@ router.get("/cart", auth, async (req, res) => {
         res.json({ cart, cartDetail: merged });
     } catch (err) {
         console.error(err);
-        res.status(500).send("서버 오류");
+        res.status(500).send("サーバーエラー");
     }
 });
 
@@ -191,7 +191,7 @@ router.put("/cart/quantity", auth, async (req, res) => {
         );
 
         if (!cartItem)
-            return res.status(404).send("상품이 장바구니에 없습니다.");
+            return res.status(404).send("商品がカートに入っていません。");
 
         if (type === "inc") {
             cartItem.quantity += 1;
@@ -214,8 +214,8 @@ router.put("/cart/quantity", auth, async (req, res) => {
 
         return res.status(200).json({ cart: user.cart, cartDetail });
     } catch (err) {
-        console.error("수량 변경 실패:", err);
-        return res.status(500).send("수량 변경 실패");
+        console.error("数量変更失敗:", err);
+        return res.status(500).send("数量変更失敗:");
     }
 });
 
@@ -223,7 +223,7 @@ router.post("/payment", auth, async (req, res) => {
     try {
         const { cartDetail } = req.body;
         const user = await User.findById(req.user._id);
-        if (!user) return res.status(404).send("유저 없음");
+        if (!user) return res.status(404).send("ユーザーなし");
 
         const history = [];
         const paidIds = [];
@@ -272,8 +272,8 @@ router.post("/payment", auth, async (req, res) => {
 
         res.sendStatus(200);
     } catch (err) {
-        console.error("결제 오류:", err);
-        res.status(500).send("결제 처리 중 오류 발생");
+        console.error("決済エラー", err);
+        res.status(500).send("決済処理中にエラーが発生");
     }
 });
 
@@ -283,7 +283,7 @@ router.post("/wishlist", auth, async (req, res, next) => {
         const productId = req.body.productId;
 
         if (user.wishlist.includes(productId)) {
-            return res.status(400).json({ message: "이미 찜한 상품입니다." });
+            return res.status(400).json({ message: "すでにお気に入りの商品です。" });
         }
 
         user.wishlist.push(productId);
@@ -312,13 +312,13 @@ router.delete("/wishlist", auth, async (req, res, next) => {
 router.get("/wishlist", auth, async (req, res) => {
     try {
         const user = await User.findById(req.user._id);
-        if (!user) return res.status(404).send("유저를 찾을 수 없습니다.");
+        if (!user) return res.status(404).send("ユーザーが見つかりません。");
 
         const products = await Product.find({ _id: { $in: user.wishlist } });
         res.json({ products });
     } catch (err) {
-        console.error("찜 목록 불러오기 실패:", err);
-        res.status(500).send("서버 오류");
+        console.error("お気に入りリストの読み込みに失敗:", err);
+        res.status(500).send("サーバーエラー");
     }
 });
 
@@ -328,7 +328,7 @@ router.post("/cart/batch", auth, async (req, res) => {
         if (!Array.isArray(productIds)) {
             return res
                 .status(400)
-                .json({ message: "상품 ID 배열이 필요합니다." });
+                .json({ message: "商品IDの配列が必要です。" });
         }
 
         const user = await User.findById(req.user.id);
@@ -343,7 +343,7 @@ router.post("/cart/batch", auth, async (req, res) => {
         res.json(user.cart);
     } catch (err) {
         console.error(err);
-        res.status(500).send("서버 오류");
+        res.status(500).send("サーバーエラー");
     }
 });
 
@@ -353,7 +353,7 @@ router.delete("/wishlist/batch", auth, async (req, res) => {
         if (!Array.isArray(productIds)) {
             return res
                 .status(400)
-                .json({ message: "상품 ID 배열이 필요합니다." });
+                .json({ message: "商品IDの配列が必要です。" });
         }
 
         const user = await User.findById(req.user.id);
@@ -362,24 +362,14 @@ router.delete("/wishlist/batch", auth, async (req, res) => {
         );
 
         await user.save();
-        res.send("삭제 성공");
+        res.send("削除成功");
     } catch (err) {
         console.error(err);
-        res.status(500).send("서버 오류");
+        res.status(500).send("サーバーエラー");
     }
 });
 
-// router.get("/myproducts", auth, async (req, res) => {
-//     try {
-//         const products = await Product.find({ writer: req.user._id }).sort({
-//             createdAt: -1,
-//         });
-//         return res.status(200).json({ products });
-//     } catch (error) {
-//         console.error("내가 올린 상품 불러오기 실패:", error);
-//         return res.status(500).send("서버 오류");
-//     }
-// });
+
 
 router.get("/myproducts", auth, async (req, res) => {
     try {
@@ -396,8 +386,8 @@ router.get("/myproducts", auth, async (req, res) => {
 
         return res.status(200).json({ products });
     } catch (error) {
-        console.error("내가 올린 상품 불러오기 실패:", error);
-        return res.status(500).send("서버 오류");
+        console.error("私が投稿した商品のインポートに失敗:", error);
+        return res.status(500).send("サーバーエラー");
     }
 });
 

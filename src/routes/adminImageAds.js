@@ -27,9 +27,9 @@ router.get("/", async (req, res) => {
             .sort({ order: 1, createdAt: -1 });
         res.json(ads);
     } catch (err) {
-        console.error("광고 이미지 조회 오류:", err);
+        console.error("広告イメージ照会エラー", err);
         res.status(500).json({
-            message: "광고 목록을 불러오지 못했습니다.",
+            message: "広告リストを読み込めませんでした。",
             error: err,
         });
     }
@@ -41,7 +41,7 @@ router.post("/", authAdmin, upload.single("image"), async (req, res) => {
         if (!productId || !req.file) {
             return res
                 .status(400)
-                .json({ message: "productId와 image 파일이 모두 필요합니다." });
+                .json({ message: "product Idとimageファイルの両方が必要です。" });
         }
 
         const maxOrderDoc = await ImageAd.findOne()
@@ -57,9 +57,9 @@ router.post("/", authAdmin, upload.single("image"), async (req, res) => {
         await newAd.save();
         res.status(201).json(newAd);
     } catch (err) {
-        console.error("광고 이미지 업로드 오류:", err);
+        console.error("広告画像アップロードエラー:", err);
         res.status(500).json({
-            message: "광고 업로드에 실패했습니다.",
+            message: "広告のアップロードに失敗しました。",
             error: err,
         });
     }
@@ -113,14 +113,14 @@ router.patch("/order/:id", authAdmin, async (req, res) => {
 
     if (!["up", "down"].includes(direction)) {
         return res.status(400).json({
-            message: "direction 값은 'up' 또는 'down'만 허용됩니다.",
+            message: "direction値は、「up」または「down」のみが許可されます。",
         });
     }
 
     try {
         const ad = await ImageAd.findById(id);
         if (!ad) {
-            return res.status(404).json({ message: "해당 광고를 찾을 수 없습니다." });
+            return res.status(404).json({ message: "その広告が見つかりません。" });
         }
 
         const targetOrder = direction === "up" ? ad.order - 1 : ad.order + 1;
@@ -129,7 +129,7 @@ router.patch("/order/:id", authAdmin, async (req, res) => {
             .sort({ createdAt: 1 }); // 안정성을 위해 추천
 
         if (!swapAd) {
-            return res.status(400).json({ message: "더 이상 이동할 수 없습니다." });
+            return res.status(400).json({ message: "これ以上移動できません。" });
         }
 
         const tempOrder = ad.order;
@@ -138,11 +138,11 @@ router.patch("/order/:id", authAdmin, async (req, res) => {
 
         await Promise.all([ad.save(), swapAd.save()]);
 
-        res.json({ message: "순서 변경 성공", ad });
+        res.json({ message: "順序変更成功", ad });
     } catch (err) {
-        console.error("광고 순서 변경 오류:", err);
+        console.error("広告順序変更エラー:", err);
         res.status(500).json({
-            message: "광고 순서 변경에 실패했습니다.",
+            message: "広告の順番の変更に失敗しました。",
             error: err,
         });
     }
@@ -158,7 +158,7 @@ router.delete("/:id", authAdmin, async (req, res) => {
         if (!ad)
             return res
                 .status(404)
-                .json({ message: "삭제할 광고를 찾을 수 없습니다." });
+                .json({ message: "削除する広告が見つかりません。" });
         if (ad.image) {
             const filePath = path.join(__dirname, "../../", ad.image);
             if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
@@ -166,9 +166,9 @@ router.delete("/:id", authAdmin, async (req, res) => {
 
         res.sendStatus(204);
     } catch (err) {
-        console.error("광고 삭제 오류:", err);
+        console.error("広告削除エラー:", err);
         res.status(500).json({
-            message: "광고 삭제에 실패했습니다.",
+            message: "広告の削除に失敗しました。",
             error: err,
         });
     }
