@@ -4,15 +4,7 @@ const Faq = require("../models/Faq");
 const auth = require("../middleware/auth");
 const mongoose = require("mongoose");
 
-// const csrf = require("csurf");
-// const csrfProtection = csrf({
-//     cookie: {
-//         httpOnly: false,
-//         sameSite: "none",
-//         secure: false,
-//     },
-//     value: (req) => req.headers["x-xsrf-token"],
-// });
+
 
 router.get("/", async (req, res) => {
     try {
