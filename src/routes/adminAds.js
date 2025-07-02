@@ -39,8 +39,8 @@ router.post("/", adminAuth, upload.single("video"), async (req, res) => {
         await ad.save();
         res.status(201).json(ad);
     } catch (err) {
-        console.error("광고 등록 실패:", err);
-        res.status(500).json("서버 오류");
+        console.error("広告登録失敗:", err);
+        res.status(500).json("サーバーエラー");
     }
 });
 
@@ -50,8 +50,8 @@ router.get("/", async (req, res) => {
 
         res.json(ads);
     } catch (err) {
-        console.error("광고 목록 불러오기 실패:", err);
-        res.status(500).json("서버 오류");
+        console.error("広告リストの読み込みに失敗:", err);
+        res.status(500).json("サーバーエラー");
     }
 });
 
@@ -67,20 +67,20 @@ router.post("/reorder", authAdmin, async (req, res) => {
             )
         );
 
-        res.status(200).json({ message: "광고 순서가 변경되었습니다." });
+        res.status(200).json({ message: "広告の順番が変更されました。" });
     } catch (err) {
-        console.error("광고 순서 변경 실패:", err);
-        res.status(500).json({ message: "서버 오류" });
+        console.error("広告順序変更失敗:", err);
+        res.status(500).json({ message: "サーバーエラー" });
     }
 });
 
 router.delete("/:id", adminAuth, async (req, res) => {
     try {
         await Ad.findByIdAndDelete(req.params.id);
-        res.status(200).json({ message: "광고 삭제 완료" });
+        res.status(200).json({ message: "広告削除完了" });
     } catch (err) {
-        console.error("광고 삭제 실패:", err);
-        res.status(500).json({ message: "서버 오류" });
+        console.error("広告削除失敗:", err);
+        res.status(500).json({ message: "サーバーエラー" });
     }
 });
 

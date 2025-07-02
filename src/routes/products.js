@@ -218,15 +218,15 @@ router.delete("/:id", auth, async (req, res) => {
 router.put("/:id", auth, async (req, res) => {
     try {
         const product = await Product.findById(req.params.id);
-        if (!product) return res.status(404).send("상품을 찾을 수 없습니다.");
+        if (!product) return res.status(404).send("商品が見つかりません。");
         if (product.writer.toString() !== req.user._id.toString()) {
-            return res.status(403).send("수정 권한이 없습니다.");
+            return res.status(403).send("権限がありません。");
         }
 
         await Product.findByIdAndUpdate(req.params.id, req.body);
-        res.send("상품이 수정되었습니다.");
+        res.send("商品が修正されました。");
     } catch (err) {
-        res.status(500).send("상품 수정 실패");
+        res.status(500).send("商品修正失敗");
     }
 });
 
