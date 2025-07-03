@@ -88,6 +88,7 @@ const csrfProtection = csrf({
 //     value: (req) => req.headers["x-xsrf-token"],
 // });
 
+
 app.use((req, res, next) => {
     if (req.method === "OPTIONS") return res.sendStatus(200);
     const csrfNeeded = ["POST", "PUT", "DELETE"].includes(req.method);
