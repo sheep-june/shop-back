@@ -38,7 +38,7 @@ router.get("/auth", auth, async (req, res) => {
 
 router.post(
     "/register",
-    authLimiter,
+    // authLimiter, //발표
     [
         body("email").isEmail().withMessage("有効なメールアドレスを入力してください。"),
         body("password")
@@ -64,7 +64,7 @@ router.post(
 
 router.post(
     "/login",
-    authLimiter,
+    // authLimiter,//발표
     [
         body("email").isEmail().withMessage("有効なメールアドレスを入力してください。"),
         body("password").notEmpty().withMessage("パスワードを入力してください。"),
